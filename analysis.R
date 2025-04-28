@@ -4,11 +4,11 @@ analysis_fan_r<- function(funs, n, thetas, n_reps, ttl, filename){
 
   simulations <- matrix(0, nrow = n_reps, ncol = length(thetas))
   
-  for (j in 1:length(thetas)) {
-    simulations[, j] <- sapply(1:n_reps, function(i) {
-      assortativity.degree(graphon_simulator(funs, n, thetas[j]))
-    })
+  for (j in seq_along(thetas)) {
+    graphs <- replicate(n_reps, graphon_simulator(funs, n, thetas[j]), simplify = FALSE)
+    simulations[, j] <- vapply(graphs, assortativity.degree, numeric(1))
   }
+  
   average <- colMeans(simulations)
   min_vals <- apply(simulations, 2, min)
   max_vals <- apply(simulations, 2, max)
